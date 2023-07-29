@@ -1,0 +1,103 @@
+<html>
+<head>
+<title>PostgreSQL i php</title>
+</head>
+<body>
+<h1> Tabela "Wypożyczenie" </h1>
+<?php
+// tu umieszczamy kod skryptu
+// Połączmy się z bazą danych i rozłączmy się z nią natychmiast
+$dbh = pg_connect("dbname=biblioteka user=jelkur
+password=123 host=localhost") or die("Nie moge
+polaczyc sie z baza danych ! ");
+// tu powinno byc polaczenie
+// wykonajmy zapytanie
+// wyświetlmy dane
+$query = "Select * from wypozyczenie";
+
+$wynik = pg_query($dbh,$query);
+// odbierzmy rozmiary tabeli:
+$liczba_kolumn = pg_num_fields($wynik);
+$liczba_wierszy = pg_num_rows($wynik);
+/// teraz wyświetlmy dane
+// teraz wyświetlmy dane
+echo "<TABLE border width=1>";
+echo "<TR>";
+for($k =0;$k<$liczba_kolumn;$k++)
+{
+echo "<TD>";
+echo pg_field_name($wynik,$k);
+echo "</TD>"; //echo "\t";
+}
+echo "<td>Usun</td><td>Edytuj</td></TR>";
+for($w =0;$w<$liczba_wierszy;$w++)
+{
+echo "<TR>";
+for($k =0;$k<$liczba_kolumn;$k++)
+{
+echo "<TD>";
+echo pg_fetch_result($wynik,$w,$k);
+echo "</TD>"; //echo "\t";
+}
+$id_wypozyczenie = pg_fetch_result($wynik,$w,$liczba_kolumn-7);
+$kto_wypozyczyl = pg_fetch_result($wynik,$w,$liczba_kolumn-6);
+$co_wypozyczyl = pg_fetch_result($wynik,$w,$liczba_kolumn-5);
+$data_wypozyczenia = pg_fetch_result($wynik,$w,$liczba_kolumn-4);
+$data_zwrotu = pg_fetch_result($wynik,$w,$liczba_kolumn-3);
+$pracownik_wypozyczenia = pg_fetch_result($wynik,$w,$liczba_kolumn-2);
+$pracownik_zwrotu = pg_fetch_result($wynik,$w,$liczba_kolumn-1);
+// tu dodajemy formularz do usuwania osoby
+echo "<td><form action=usun_wypozyczenie.php
+method=POST>
+<input type=hidden name=id_wypozyczenie value=$id_wypozyczenie>
+<input type=submit name=usun value=Usun></form></td>";
+// tu dodajemy formularz do edycji osoby
+echo "<td><form action=edytuj_wypozyczenie.php
+method=POST>
+<input type=hidden name=id_wypozyczenie value=$id_wypozyczenie>
+<input type=hidden name=kto_wypozyczyl value=$kto_wypozyczyl>
+<input type=hidden name=co_wypozyczyl value=$co_wypozyczyl>
+<input type=hidden name=data_wypozyczenia value=$data_wypozyczenia>
+<input type=hidden name=data_zwrotu value=$data_zwrotu>
+<input type=hidden name=pracownik_wypozyczenia value=$pracownik_wypozyczenia>
+<input type=hidden name=pracownik_zwrotu value=$pracownik_zwrotu>
+<input type=submit name=edytuj value=Edytuj></form></td>";
+
+echo "</TR>"; //echo "<br />";
+}
+echo "</TABLE>";
+
+// Tu dopiszmy nową osobę
+echo "<FORM action=dodaj_wypozyczenie.php method=POST> <br />
+Dodaj nowe wypożyczenie bazy <br /> Kto wypożyczył:
+<input type=text name=kto_wypozyczyl> Co wypożyczył:
+<input type=text name=co_wypozyczyl> Data wypożyczenia:
+<input type=text name=data_wypozyczenia> Pracownik przyjmujący wypożyczenie:
+<input type=text name=pracownik_wypozyczenia> <br />
+<input type=submit name=Dodaj
+value=Dodaj> </form>";
+
+// Tu dowiemy się ile wypożyczeń za miesiąć
+echo "<FORM action=wypozyczenia_za_miesiac.php method=POST> <br />
+Ile dokonano wypożyczeń za podany okres? Wpisz XXXX-XX-XX <br /> Od:
+<input type=text name=okres_od> Do:
+<input type=text name=okres_do>  <br />
+<input type=submit name=sprawdz
+value=Sprawdź> </form>";
+
+// Tu dowiemy się ile wypożyczeń ma każda osoba
+echo "<FORM action=ile_wypozyczen.php method=POST> <br />
+Chcesz się dowiedzieć, ile wypożyczeń ma konkretny czytelnik? Wpisz jego indeks: <br /> Indeks czytelnika:
+<input type=text name=id_czytelnik>
+<input type=submit name=sprawdz
+value=Sprawdź> </form>";
+
+//echo "Jest Polaczenie z baza danych ! ";
+echo "<td><form action=glowna.php
+method=POST> <br/>
+<input type=submit name=usun value=Wróć></form></td>";
+pg_close($dbh);
+?>
+</body>
+</html>
+

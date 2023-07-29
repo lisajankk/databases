@@ -1,0 +1,55 @@
+<html>
+<head>
+<title>PostgreSQL i php</title>
+</head>
+<body>
+<h1> Baza danych biblioteki</h1>
+<?php
+// tu umieszczamy kod skryptu
+// Połączmy się z bazą danych i rozłączmy się z nią
+$dbh = pg_connect("dbname=biblioteka user=jelkur
+password=123 host=localhost") or die("Nie moge
+polaczyc sie z baza danych !");
+// tu powinno byc polaczenie
+echo "Dana baza danych zostanie zaprojektowana na potrzebę biblioteki. ";
+echo "<td><form action=czytelnik.php
+method=POST> <br /> Zawiera ona: <br/> <br//> 1. Tabele czytelników  pracowników (i ich role) danej biblioteki. <br />
+<input type=submit name=usun value=Czytelnicy></form></td>";
+
+echo "<td><form action=rola.php
+method=POST>
+<input type=submit name=usun value=Role pracowników></form></td>";
+
+echo "<td><form action=pracownik.php
+method=POST>
+<input type=submit name=usun value=Pracownicy></form></td>";
+
+echo "<td><form action=ksiazka.php
+method=POST> <br /> 2. Tabelę książek znajdujących się w bibliotece. <br />
+<input type=submit name=usun value=Książki></form></td>";
+
+echo "<td><form action=autor.php
+method=POST> <br /> 3. Tabele z dodatkowymi informacjami: autorzy, wydawnictwa oraz kategorie książek. <br />
+<input type=submit name=usun value=Autorzy></form></td>";
+
+echo "<td><form action=wydawnictwo.php
+method=POST>
+<input type=submit name=usun value=Wydawnictwa></form></td>";
+
+echo "<td><form action=kategoria.php
+method=POST>
+<input type=submit name=usun value=Kategorie></form></td>";
+
+echo "<td><form action=wypozyczenie.php
+method=POST> <br /> 4. Tabelę wypożyczeń książek. <br />
+<input type=submit name=usun value=Wypożyczenia></form></td>";
+
+echo "<td><form action=widok.php
+method=POST> <br /> 5. Widok (połączenie kilku tabel), ułatwiający czytanie informacji na temat dokonanych wypożyczeń. <br />
+<input type=submit name=usun value=Widok></form></td>";
+
+pg_close($dbh);
+?>
+</body>
+</html>
+

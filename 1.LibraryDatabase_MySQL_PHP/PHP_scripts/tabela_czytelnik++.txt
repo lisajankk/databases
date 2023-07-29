@@ -1,0 +1,85 @@
+<html>
+<head>
+<title>PostgreSQL i php</title>
+</head>
+<body>
+<h1> Tabela "Czytelnik" </h1>
+<?php
+// tu umieszczamy kod skryptu
+// Połączmy się z bazą danych i rozłączmy się z nią natychmiast
+$dbh = pg_connect("dbname=biblioteka user=jelkur
+password=123 host=localhost") or die("Nie moge
+polaczyc sie z baza danych ! ");
+// tu powinno byc polaczenie
+// wykonajmy zapytanie
+// wyświetlmy dane
+$query = "Select * from czytelnik";
+$wynik = pg_query($dbh,$query);
+// odbierzmy rozmiary tabeli:
+$liczba_kolumn = pg_num_fields($wynik);
+$liczba_wierszy = pg_num_rows($wynik);
+/// teraz wyświetlmy dane
+// teraz wyświetlmy dane
+echo "<TABLE border width=1>";
+echo "<TABLE border width=1>";
+echo "<TR>";
+for($k =0;$k<$liczba_kolumn;$k++)
+{
+echo "<TD>";
+echo pg_field_name($wynik,$k);
+echo "</TD>"; //echo "\t";
+}
+
+echo "<td>Usun</td><td>Edytuj</td></TR>";
+for($w =0;$w<$liczba_wierszy;$w++)
+{
+echo "<TR>";
+for($k =0;$k<$liczba_kolumn;$k++)
+{
+echo "<TD>";
+echo pg_fetch_result($wynik,$w,$k);
+echo "</TD>"; //echo "\t";
+}
+$idos = pg_fetch_result($wynik,$w,$liczba_kolumn-6);
+$imie = pg_fetch_result($wynik,$w,$liczba_kolumn-5);
+$nazwisko = pg_fetch_result($wynik,$w,$liczba_kolumn-4);
+$email = pg_fetch_result($wynik,$w,$liczba_kolumn-3);
+$telefon = pg_fetch_result($wynik,$w,$liczba_kolumn-2);
+$data_urodzenia = pg_fetch_result($wynik,$w,$liczba_kolumn-1);
+// tu dodajemy formularz do usuwania osoby
+echo "<td><form action=usun.php
+method=POST>
+<input type=hidden name=idos value=$idos>
+<input type=submit name=usun value=Usun></form></td>";
+// tu dodajemy formularz do edycji osoby
+echo "<td><form action=edytuj.php
+method=POST>
+<input type=hidden name=idos value=$idos>
+<input type=hidden name=imie value=$imie>
+<input type=hidden name=nazwisko value=$nazwisko>
+<input type=hidden name=email value=$email>
+<input type=hidden name=telefon value=$telefon>
+<input type=hidden name=data_urodzenia value=$data_urodzenia>
+<input type=submit name=edytuj value=Edytuj></form></td>";
+echo "</TR>"; //echo "<br />";
+}
+echo "</TABLE>";
+// Tu dopiszmy nową osobę
+echo "<FORM action=dodaj.php method=POST> <br />
+Dodaj nową osobę do bazy <br /> Imię:
+<input type=text name=imie> Nazwisko:
+<input type=text name=nazwisko> Email:
+<input type=text name=email> Telefon:
+<input type=text name=telefon> Data urodzenia:
+<input type=text name=data_urodzenia> <br />
+<input type=submit name=Dodaj
+value=Dodaj> </form>";
+//echo "Jest Polaczenie z baza danych ! ";
+echo "<td><form action=glowna.php
+method=POST> <br/>
+<input type=submit name=usun value=Wróć></form></td>";
+pg_close($dbh);
+?>
+</body>
+</html>
+

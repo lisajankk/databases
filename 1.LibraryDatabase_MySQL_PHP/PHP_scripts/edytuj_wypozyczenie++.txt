@@ -1,0 +1,65 @@
+<html>
+<head>
+<title>Edytuj wypozyczenie</title>
+</head>
+<body>
+<h1> Edytuj wypozyczenie </h1>
+<?php
+// tu umieszczamy kod skryptu
+//po pierwsze – odbierzmy parametry dla skryptu przekazane
+//metodą //POST – uzyjemy je w zapytaniu ponizej
+$id_wypozyczenie = $_POST['id_wypozyczenie'];
+$kto_wypozyczyl = $_POST['kto_wypozyczyl'];
+$co_wypozyczyl = $_POST['co_wypozyczyl'];
+$data_wypozyczenia = $_POST['data_wypozyczenia'];
+$data_zwrotu = $_POST['data_zwrotu'];
+$pracownik_wypozyczenia = $_POST['pracownik_wypozyczenia'];
+$pracownik_zwrotu = $_POST['pracownik_zwrotu'];
+$zm=$_POST['zmien'];
+// Połączmy się z bazą danych
+$dbh = pg_connect("dbname=biblioteka user=jelkur
+password=123 host=localhost") or die("Nie
+moge polaczyc sie z baza danych ! ");
+// tu powinno byc polaczenie
+// wykonajmy zapytanie – najpierw wyswietlmy dane
+$query = "SELECT kto_wypozyczyl,co_wypozyczyl,data_wypozyczenia,data_zwrotu,pracownik_wypozyczenia,pracownik_zwrotu, id_wypozyczenie from wypozyczenie
+where id_wypozyczenie=$id_wypozyczenie";
+$wynik = pg_query($query);
+echo "<form action=edytuj_wypozyczenie.php method=post>";
+echo "<table border width=1>";
+$lk = pg_num_fields($wynik);
+for($k = 0;$k<$lk -1; $k++)
+{
+echo "<tr>";
+echo "<td>";
+echo pg_field_name($wynik,$k);
+echo "</td>";
+echo "<td>";
+$f_name = pg_field_name($wynik, $k);
+$f_val = pg_fetch_result($wynik,0,$k);
+echo "<input type=text name='$f_name' value='$f_val'>";
+echo "</td>";
+echo "</tr>";
+}
+echo "</table>";
+echo "<input type=hidden name=id_wypozyczenie value=$id_wypozyczenie>";
+echo "<input type=submit name=zmien value=zmien>";
+echo "</form>";
+if ($zm)
+{
+$query = "UPDATE wypozyczenie SET kto_wypozyczyl='$kto_wypozyczyl', co_wypozyczyl='$co_wypozyczyl', data_wypozyczenia='$data_wypozyczenia', data_zwrotu='$data_zwrotu', pracownik_wypozyczen$
+$wynik = pg_query($query);
+// sprawdzmy ile wierszy podmieniono
+$lz = pg_affected_rows($wynik);
+echo " Edytowano $lz wypozyczenie <br /> \n";
+}
+pg_close($dbh);
+// zapewnijmy powrot do strony poprzedniej
+echo "<form action=wypozyczenie.php method=post>
+<input type=submit name=Ok value=OK>
+</form>";
+?>
+</body>
+</html>
+
+

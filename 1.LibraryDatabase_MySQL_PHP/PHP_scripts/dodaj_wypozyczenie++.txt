@@ -1,0 +1,37 @@
+<html>
+<head>
+<title>Dodaj wypozyczenie</title>
+</head>
+<body>
+<h1> Dodaję wypozyczenie </h1>
+<?php
+// tu umieszczamy kod skryptu
+//po pierwsze – odbierzmy parametry dla skryptu przekazane
+//metodą //POST – uzyjemy je w zapytaniu ponizej
+$kto_wypozyczyl = $_POST['kto_wypozyczyl'];
+$co_wypozyczyl = $_POST['co_wypozyczyl'];
+$data_wypozyczenia = $_POST['data_wypozyczenia'];
+$pracownik_wypozyczenia = $_POST['pracownik_wypozyczenia'];
+// Połączmy się z bazą danych
+$dbh = pg_connect("dbname=biblioteka user=jelkur
+password=123 host=localhost") or die("Nie
+moge polaczyc sie z baza danych ! ");
+// tu powinno byc polaczenie
+// wykonajmy zapytanie
+$query = "INSERT INTO wypozyczenie(kto_wypozyczyl,co_wypozyczyl,data_wypozyczenia,pracownik_wypozyczenia,pracownik_zwrotu) VALUES
+('$kto_wypozyczyl','$co_wypozyczyl','$data_wypozyczenia','$pracownik_wypozyczenia','1')";
+$wynik = pg_query($query);
+// sprawdzmy ile wierszy podmieniono
+$lz = 0;
+$lz = pg_affected_rows($wynik);
+echo " Dodano $lz wypozyczenie. <br /> \n";
+echo " *Jeśli liczba wypożyczeń równa 0, oznacza to że czytelnik już ma 3 wypożyczone książki.\n";
+pg_close($dbh);
+// zapewnijmy powrot do strony poprzedniej
+echo "<form action=wypozyczenie.php method=post>
+<input type=submit name=Ok value=OK>
+</form>";
+?>
+</body>
+</html>
+

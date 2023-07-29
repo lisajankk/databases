@@ -1,0 +1,91 @@
+CREATE TABLE czytelnik(
+ID_czytelnik serial primary key,
+imie varchar(40) not null,
+nazwisko varchar(40) not null,
+email varchar(50) not null,
+telefon char(15) not null,
+data_urodzenia date);
+
+CREATE TABLE pracownik(
+ID_pracownik serial primary key,
+imie varchar(40) not null,
+nazwisko varchar(40) not null,
+email varchar(50),
+telefon char(15),
+data_urodzenia date,
+rola_pracownika int not null references rola on delete restrict on update restrict);
+
+CREATE TABLE rola(
+ID_rola serial primary key,
+nazwa_roli varchar(40) not null);
+
+CREATE TABLE ksiazka(
+ID_ksiazka serial primary key,
+tytul varchar(40) not null,
+jaka_kategoria int not null references kategoria on delete restrict on update restrict,
+kto_autor int not null references autor on delete restrict on update restrict,
+jakie_wydawnictwo int not null references wydawnictwo on delete restrict on update restrict,
+rok_wydania date);
+
+CREATE TABLE wydawnictwo(
+ID_wydawnictwo serial primary key,
+nazwa_wydawnictwa varchar(40) not null);
+
+CREATE TABLE autor(
+ID_autor serial primary key,
+imie varchar(40) not null,
+nazwisko varchar(40) not null);
+
+CREATE TABLE kategoria(
+ID_kategoria serial primary key,
+nazwa_kategorii varchar(40) not null);
+
+CREATE TABLE wypozyczenie(
+ID_wypozyczenie serial primary key,
+kto_wypozyczyl int not null references czytelnik on delete restrict on update restrict,
+co_wypozyczyl int not null references ksiazka on delete restrict on update restrict,
+data_wypozyczenia date,
+data_zwrotu date,
+pracownik_wypozyczenia int not null references pracownik on delete restrict on update restrict,
+pracownik_zwrotu int not null references pracownik on delete restrict on update restrict);
+
+
+
+Dodawanie danych:
+
+insert into czytelnik(id_czytelnik, imie, nazwisko, email, telefon, data_urodzenia) values (1, 'Jan', 'Adamski', 'jan.adamski@gmail.com', 765123456, '2000-01-04');
+
+insert into pracownik(id_pracownik, imie, nazwisko, email, telefon, data_urodzenia, rola_pracownika) values (1, 'Agata', 'Wilemska', 'agata.wilemska@gmail.com', 776782931, '2000-01-04', 1);
+
+insert into rola(id_rola, nazwa_roli) values (1, 'bibliotekarz');
+
+insert into wydawnictwo(id_wydawnictwo, nazwa_wydawnictwa) values (1, 'Nasza Księgarnia');
+
+insert into kategoria(id_kategoria, nazwa_kategorii) values (2, 'romans');
+
+
+
+Książki:
+- 1V. E. Schwab - Niewidzialne życie Addie LaRue - fantastyka 
+- 2Won-Pyung Sohn - Almond - literatura młodzieżowa
+- 3Stephan King - Później - horror
+- 4Lucinda Rilley - Zaginiona Siostra - Siedem Sióstr - literatura obyczajowa
+- 5Przemysław Piotrkowski - Zaraza - kriminal sensacja thriller
+- 6Matt Haig - Biblioteka o północy - fantasy
+- 7Ana Johns - Kobieta w białym Kimonie - romans
+- 8Nicholas Sparks - Powrót - obyczajowa
+- 9Sally Rooney - Rozmowy z przyjaciółmi - młodzieżowa
+- 10Jakub Małecki - Święto Ognia - literatura piękna
+
+11 - Stephan King - Zielona Mila - 2021 - romans
+12 - Stepghan King - Miasteczko Salem - 2012 - obyczajowa
+13 - Jakub Malecki - Ślady - 2016 - kriminal
+14 - Matt Haig - Nasza nerwowa planeta - science fiction
+15 - Matt Haig - Chłopiec zwany Gwiazdką - młodzieżowa
+
+insert into autor(id_autor, imie, nazwisko) values (1, 'V. E.', 'Schwab');
+
+insert into ksiazka(id_ksiazka, tytul, jaka_kategoria, kto_autor, jakie_wydawnictwo, rok_wydania) values (1, 'Zaginiona Siostra - Siedem Sióstr', 1, 4, 3, '2018');
+
+insert into wypozyczenie(id_wypozyczenie, kto_wypozyczyl, co_wypozyczyl, data_wypozyczenia, data_zwrotu, pracownik_wypozyczenia, pracownik_zwrotu) values (1, 1, 1, '2022-01-03', '2022-01-13', 1, 5);
+

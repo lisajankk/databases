@@ -1,0 +1,32 @@
+<html>
+<head>
+<title>Ile wypożyczeń</title>
+</head>
+<body>
+<h1> Ile wypożyczeń ma konkretna osoba?</h1>
+<?php
+// tu umieszczamy kod skryptu
+//po pierwsze – odbierzmy parametry dla skryptu przekazane
+//metodą //POST – uzyjemy je w zapytaniu ponizej
+$id_czytelnik = $_POST['id_czytelnik'];
+// Połączmy się z bazą danych
+$dbh = pg_connect("dbname=biblioteka user=jelkur
+password=123 host=localhost") or die("Nie
+moge polaczyc sie z baza danych ! ");
+// tu powinno byc polaczenie
+// wykonajmy zapytanie
+
+$query =  "SELECT ile_wypozyczen('$id_czytelnik')";
+$wynik = pg_query($dbh,$query);
+$lz = pg_fetch_result($wynik,0,0);
+
+// sprawdzmy ile wierszy podmieniono
+echo " Czytelnik ma $lz wypożyczonych książek <br />\n";
+pg_close($dbh);
+// zapewnijmy powrot do strony poprzedniej
+echo "<form action=wypozyczenie.php method=post>
+<input type=submit name=Ok value=OK>
+</form>";
+?>
+</body>
+</html>

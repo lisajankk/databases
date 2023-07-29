@@ -1,0 +1,51 @@
+<html>
+<head>
+<title>PostgreSQL i php</title>
+</head>
+<body>
+<h1> Tabela "Rola" </h1>
+<?php
+// tu umieszczamy kod skryptu
+// Połączmy się z bazą danych i rozłączmy się z nią natychmiast
+$dbh = pg_connect("dbname=biblioteka user=jelkur
+password=123 host=localhost") or die("Nie moge
+polaczyc sie z baza danych ! ");
+// tu powinno byc polaczenie
+// wykonajmy zapytanie
+// wyświetlmy dane
+$query = "Select * from rola";
+$wynik = pg_query($dbh,$query);
+// odbierzmy rozmiary tabeli:
+$liczba_kolumn = pg_num_fields($wynik);
+$liczba_wierszy = pg_num_rows($wynik);
+/// teraz wyświetlmy dane
+// teraz wyświetlmy dane
+echo "<TABLE border width=1>";
+echo "<TR>";
+for($k =0;$k<$liczba_kolumn;$k++)
+{
+echo "<TD>";
+echo pg_field_name($wynik,$k);
+echo "</TD>"; //echo "\t";
+}
+echo "</TR>";
+for($w =0;$w<$liczba_wierszy;$w++)
+{
+echo "<TR>";
+for($k =0;$k<$liczba_kolumn;$k++)
+{
+echo "<TD>";
+echo pg_fetch_result($wynik,$w,$k);
+echo "</TD>"; //echo "\t";
+}
+echo "</TR>"; //echo "<br />";
+}
+echo "</TABLE>";
+//echo "Jest Polaczenie z baza danych ! ";
+echo "<td><form action=glowna.php
+method=POST> <br/>
+<input type=submit name=usun value=Wróć></form></td>";
+pg_close($dbh);
+?>
+</body>
+</html>

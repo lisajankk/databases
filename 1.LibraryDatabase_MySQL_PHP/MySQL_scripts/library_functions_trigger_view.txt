@@ -1,0 +1,64 @@
+CREATE FUNCTION ile_wypozyczen(int) RETURNS int
+LANGUAGE plpgsql
+AS
+'
+declare
+ilosc_wypozyczen float;
+begin
+select count(*) into ilosc_wypozyczen from wypozyczenie where
+wypozyczenie.kto_wypozyczyl=$1;
+return ilosc_wypozyczen;
+end;
+';
+
+
+
+CREATE or replace FUNCTION wypozyczenia_za_miesiac(date, date) RETURNS int
+LANGUAGE plpgsql
+AS
+'
+declare
+ilosc_wypozyczen_mies float;
+begin
+select count(*) into ilosc_wypozyczen_mies from wypozyczenie where wypozyczenie.data_wypozyczenia >=$1 and wypozyczenie.data_wypozyczenia<=$2;
+return ilosc_wypozyczen_mies;
+end;
+';
+
+
+
+CREATE or replace FUNCTION czy_uzytkownik_moze() RETURNS TRIGGER
+LANGUAGE plpgsql
+AS
+'
+DECLARE
+ilosc_wypozyczen int;
+BEGIN
+ SELECT count(*) into ilosc_wypozyczen FROM wypozyczenie WHERE
+wypozyczenie.kto_wypozyczyl=NEW.kto_wypozyczyl;
+IF ilosc_wypozyczen >2 THEN raise notice ''Masz za duzo wypozyczonych ksiazek: %'', ilosc_wypozyczen;
+RETURN NULL;
+END IF;
+RETURN NEW;
+END; ';
+
+CREATE TRIGGER czy_uzytkownik_moze_wypozyczyc_ksiazke BEFORE INSERT ON wypozyczenie FOR EACH 
+row EXECUTE PROCEDURE czy_uzytkownik_moze();
+
+
+
+CREATE VIEW kto_co_wypozyczyl 
+AS SELECT c.imie, c.nazwisko,
+k.tytul, g.nazwa_kategorii, 
+w.data_wypozyczenia, w.data_zwrotu FROM
+czytelnik c, ksiazka k, kategoria g, 
+wypozyczenie w where WHERE 
+c.id_czytelnik = w.kto_wypozyczyl 
+and k.id_ksiazka = w.co_wypozyczyl 
+and g.id_kategoria = k.jaka_kategoria;
+
+
+
+CREATE VIEW CUSTOMERS_VIEW AS
+SELECT name, age
+FROM  CUSTOMERS;

@@ -1,0 +1,35 @@
+
+<html>
+<head>
+<title>Usuń osobę</title>
+</head>
+<body>
+<h1> Ile dokonano wypożyczeń za podany okres?</h1>
+<?php
+// tu umieszczamy kod skryptu
+//po pierwsze – odbierzmy parametry dla skryptu przekazane
+//metodą //POST – uzyjemy je w zapytaniu ponizej
+$okres_od = $_POST['okres_od'];
+$okres_do = $_POST['okres_do'];
+// Połączmy się z bazą danych
+$dbh = pg_connect("dbname=biblioteka user=jelkur
+password=123 host=localhost") or die("Nie
+moge polaczyc sie z baza danych ! ");
+// tu powinno byc polaczenie
+// wykonajmy zapytanie
+$query = "SELECT wypozyczenia_za_miesiac('$okres_od','$okres_do')";
+$wynik = pg_query($dbh,$query);
+
+$lz = pg_fetch_result($wynik,0,0);
+
+// sprawdzmy ile wierszy podmieniono
+//$lz = pg_affected_rows($wynik);
+echo " Za ten okres dokonano $lz wypożyczeń <br />\n";
+pg_close($dbh);
+// zapewnijmy powrot do strony poprzedniej
+echo "<form action=wypozyczenie.php method=post>
+<input type=submit name=Ok value=OK>
+</form>";
+?>
+</body>
+</html>
